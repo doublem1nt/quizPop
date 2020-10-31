@@ -1,13 +1,59 @@
 var seeScores = document.getElementById("scoresLink");
-var secObj = docuemnt.getElementById("timeLeft");
+var secObj = document.getElementById("timeLeft");
 
 var question = document.getElementById("questionSlot");
 var answers = document.getElementById("answerOptions");
 var buttons = document.getElementById("buttonArea");
+var startBtn = document.getElementById("startButton");
 
 var homePage = true;
 var score = 0;
 var time = 30;
+
+var btn1 = document.getElementById("choice1");
+var btn2 = document.getElementById("choice2");
+var btn3 = document.getElementById("choice3");
+var btn4 = document.getElementById("choice4");
+
+var option1 = false;
+var option2 = false;
+var option3 = false;
+var option4 = false;
+
+// creates all of the buttons once the quiz begins
+function setChoiceBtn() {
+    startBtn.style.visibility = "hidden";
+    btn1.style.visibility = "visible";
+    btn2.style.visibility = "visible";
+    btn3.style.visibility = "visible";
+    btn4.style.visibility = "visible";
+}
+
+btn1.addEventListener("click", function(){
+    option1 = true;
+    console.log("option1 is" +option1);
+});
+
+btn2.addEventListener("click", function(){
+    option2 = true;
+});
+
+btn3.addEventListener("click", function(){
+    option3 = true;
+});
+
+btn4.addEventListener("click", function(){
+    option4 = true;
+});
+
+
+startBtn.addEventListener("click", function(){
+    homePage = false;
+    setTime();
+    setChoiceBtn();
+})
+
+
 
 var questions = [
     { q: "Question: What is Harry Potter's Patronus?", a: "4"},
@@ -21,6 +67,27 @@ var questions = [
     { q: "Question: When Harry visited the zoo on Dudley’s birthday, which animal did he end up talking to?", a: ""},
     { q: "Question: Which birthday does Harry begin in a shack on a rock in the middle of the water?", a: ""}
 ]
+
+// activate start of the quiz
+
+function setTime(){
+    var timerInterval = setInterval(function() {
+        time--;
+        secObj.textContent = time + " seconds remaining!";
+
+        if (time ===0) {
+            clearInterval(timerInterval); // stops time
+            time = 30;
+            highscoresPage();
+            console.log(time);
+        }
+    }, 1000) 
+}
+
+
+
+
+
 
 
 // Question: What is Harry Potter’s patronus?
