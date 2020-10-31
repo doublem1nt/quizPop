@@ -1,8 +1,8 @@
 var seeScores = document.getElementById("scoresLink");
 var secObj = document.getElementById("timeLeft");
 
-var question = document.getElementById("questionSlot");
-var answers = document.getElementById("answerOptions");
+var qSlot = document.getElementById("questionSlot");
+var optionSlot = document.getElementById("answerOptions");
 var buttons = document.getElementById("buttonArea");
 var startBtn = document.getElementById("startButton");
 
@@ -29,28 +29,37 @@ function setChoiceBtn() {
     btn4.style.visibility = "visible";
 }
 
+function begin() {
+    for (i=0; i < questions.length; i++){
+        qSlot.textContent = questions[i].q;
+        
+    }
+
+}
+
+
+
 btn1.addEventListener("click", function(){
     option1 = true;
-    console.log("option1 is" +option1);
-});
+})
 
 btn2.addEventListener("click", function(){
     option2 = true;
-});
+})
 
 btn3.addEventListener("click", function(){
     option3 = true;
-});
+})
 
 btn4.addEventListener("click", function(){
     option4 = true;
-});
-
+})
 
 startBtn.addEventListener("click", function(){
     homePage = false;
     setTime();
     setChoiceBtn();
+    begin();
 })
 
 
