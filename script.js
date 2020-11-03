@@ -37,7 +37,10 @@ var questionsArr = [
 
     // homepage display objects
     var startBtn = document.getElementById("startBtn");
-    // var starterCont = document.getElementById("starterCont");
+    var btnContainer = document.getElementById("buttonCont");
+    
+    var scoreWin = 0;
+    var highscoresArr = [];
 
 startBtn.addEventListener("click", function() {
     startBtn.setAttribute("style", "display:none");
@@ -76,13 +79,21 @@ function displayQuiz() {
 function userInput(event){
     var userClick = event.target.textContent;
     if(secondsTimer > 0) {
-        if (userClick == questionsArr[qIndex].answer) {
+        if (userClick === questionsArr[qIndex].answer && qIndex !== 4) {
             outputSlot.setAttribute("style", "color:green");
             outputSlot.textContent = "Correct!";
             timerSlot.setAttribute("style", "color:gray");
             timerSlot2.textContent = "";
             qIndex++;
             displayQuiz();
+        } else if (userClick === questionsArr[qIndex].answer && qIndex === 4){
+            scoreWin = secondsTimer;
+            timerSlot = "";
+            qSlot.textContent="FINISHED!"
+            ulSlot.textContent = "";
+            outputSlot.innerHTML = "CONGRATS, You've finished the Quiz successfully! <p> Your time will be registered as your score: " + scoreWin + ".";
+            outputSlot.setAttribute("style", "color:green");
+            displayEndInput();
         } else if (secondsTimer > 5) {
             outputSlot.setAttribute("style", "color:red");
             outputSlot.textContent = "Incorrect! Your available time has been reduced by 5 seconds!";
@@ -103,9 +114,9 @@ function userInput(event){
 }
 
 function failure() {
-    outputSlot.innerHTML = "You failed, <button id=retryBtn>Retry?</button>";
     qSlot.innerHTML = "";
     ulSlot.innerHTML = "";
+    outputSlot.innerHTML = "You failed, <button id=retryBtn>Retry?</button>";
     secondsTimer = 0;
     var retryObj = document.getElementById("retryBtn");
     retryObj.addEventListener("click", (brandNew));
@@ -113,6 +124,8 @@ function failure() {
 
 
 function brandNew (event){
+    qSlot.innerHTML = "";
+    ulSlot.innerHTML = "";
     event.preventDefault();
     qIndex = 0;
     secondsTimer = 60;
@@ -130,7 +143,38 @@ function displayHighscores(){
 }
 
 function displayEndInput() {
-    console.log("Display End Input - Window for User to add their Initials to Highscore!");
+    var buildInput = document.createElement("input");
+    buildInput.setAttribute("type", "text");
+    buildInput.setAttribute("id", "initials");
+    buildInput.setAttribute("placeholder", "Your Initial");
+    buildInput.textContent = "";
+
+    btnContainer.append(buildInput);
+
+    var buildSubmit = document.createElement("button");
+    buildSubmit.setAttribute("type", "submit");
+    buildSubmit.setAttribute("id", "Submit");
+    buildSubmit.textContent = "Submit";
+
+    btnContainer.append(buildSubmit);
+
+    var initialsUser = document.querySelector("#initials");
+
+    buildSubmit.addEventListener("click", function() {
+        var userInitials = initialsUser.value;
+
+        if (userInitials === "") {
+            outputSlot.textContent = "Error: Initials cannot be blank.";
+        } else {
+        var userScoreArr = {
+            user: userInitials, 
+            score: scoreWin,
+        };
+        highscoresArr.push(userScoreArr);
+        console.log(userScoreArr);
+        console.log(highscoresArr);
+        }
+    })
 }
 
 
