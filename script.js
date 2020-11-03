@@ -25,7 +25,8 @@ var questionsArr = [
     
     // nav bar w/ Highscores & Timer display objects
     var highscoresBtn = document.getElementById("highscoresBtn");
-    var timerSlot = document.getElementById("timeLeft");
+    var timerSlot = document.getElementById("timer1st");
+    var timerSlot2 = document.getElementById("timer2nd");
 
     // question objects
     var qSlot = document.querySelector("#questionSlot");
@@ -47,9 +48,9 @@ function setTime() {
     var timerInterval = setInterval(function() {
         secondsTimer--;
         timerSlot.textContent = secondsTimer + " seconds remaining until end!";
-        if (secondsTimer === 0) {
+        timerSlot2.textContent = "";
+        if (secondsTimer <= 0) {
             clearInterval(timerInterval);
-            displayEndInput();
         }
     }, 1000)
     displayQuiz();
@@ -61,7 +62,7 @@ function displayQuiz() {
     } else {
         qSlot.innerHtml = "";
         ulSlot.innerHTML = "";
-        qSlot.innerHTML = questionsArr[qIndex].question;
+        qSlot.textContent = questionsArr[qIndex].question;
         for (var i =0; i< questionsArr[i].options.length; i++){
             var liNewEl = document.createElement("li");
             liNewEl.setAttribute("style", "list-style-type:none");
@@ -72,52 +73,64 @@ function displayQuiz() {
     }
 }
 
-// highscoresBtn.addEventListener("click", function(event){
-//     var target = event.target;
-//     console.log(event.target);
-// })
-
 function userInput(event){
     var userClick = event.target.textContent;
-    // console.log(questionsArr[qIndex].answer);
-    // console.log(userClick);
     if(secondsTimer > 0) {
         if (userClick == questionsArr[qIndex].answer) {
-            // console.log("Hello World");
             outputSlot.setAttribute("style", "color:green");
-            outputSlot.innerHTML = "Correct!";
+            outputSlot.textContent = "Correct!";
             timerSlot.setAttribute("style", "color:gray");
+            timerSlot2.textContent = "";
             qIndex++;
             displayQuiz();
-        } else if (secondsTimer >= 0) {
+        } else if (secondsTimer > 5) {
             outputSlot.setAttribute("style", "color:red");
-            outputSlot.innerHTML = "Incorrect! Your available time has been reduced by 5 seconds!";
+            outputSlot.textContent = "Incorrect! Your available time has been reduced by 5 seconds!";
             timerSlot.setAttribute("style", "color:red");
             secondsTimer = secondsTimer - 5;
-        } 
+            timerSlot2.textContent = "Ouch! Minus 5 seconds";
+            timerSlot2.setAttribute("style", "color: red");
+        } else {
+            outputSlot.setAttribute("style", "color:red");
+            outputSlot.textContent = "Incorrect! Ran out of time!";
+            timerSlot.setAttribute("style", "color:red");
+            secondsTimer = 1;
+            failure();
+        }
     } else {
-        outputSlot.innerHTML = "<button id=retryBtn>Retry?</button>";
-        var retryObj = document.getElementById("retryBtn");
-        // console.log(retryObj);
-        retryObj.addEventListener("click", (brandNew));
-        // displayEndInput();
+        failure();
     }
 }
+
+function failure() {
+    outputSlot.innerHTML = "You failed, <button id=retryBtn>Retry?</button>";
+    qSlot.innerHTML = "";
+    ulSlot.innerHTML = "";
+    secondsTimer = 0;
+    var retryObj = document.getElementById("retryBtn");
+    retryObj.addEventListener("click", (brandNew));
+}
+
 
 function brandNew (event){
     event.preventDefault();
     qIndex = 0;
     secondsTimer = 60;
-    timerSlot.innerHTML = "This Quiz has a limited time!";
-    qSlot.innerHTML = "Coding Quiz!";
-    ulSlot.innerHTML = "";
+    timerSlot.textContent = "This Quiz has a";
+    timerSlot.setAttribute("style", "color:grey");
+    timerSlot2.textContent = "limited time!";
+    timerSlot2.setAttribute("style", "color:grey");
     outputSlot.innerHTML = "";
     startBtn.setAttribute("style", "");
     
 }
 
+function displayHighscores(){
+    console.log("Display Highscores Function here!")
+}
+
 function displayEndInput() {
-    console.log(qIndex);
+    console.log("Display End Input - Window for User to add their Initials to Highscore!");
 }
 
 
