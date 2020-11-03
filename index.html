@@ -14,49 +14,28 @@
   <title>Coding Pop Quiz</title>
 
 </head>
+<nav>
+  <!--highscores link-->
+  <div class="text-secondary fixL">
+    <a id="highscoresBtn">View HighScores!</a>
+  </div>
+
+  <!--Timer-->
+  <div class="text-secondary fixR">
+    <span id="timeLeft">This Quiz has a limited time! </span>
+  </div>
+</nav>
 
 <body>
-  <head>
-    <nav>
-      <!--highscores link-->
-      <div class="text-secondary fixL">
-        <a id="highscoresLink">View HighScores!</a>
-      </div>
-
-      <!--Modal to display saved highscores-->
-      <div id="scoreModal" class="modal">
-        <div id="modalSlot">
-          <span class ="closeX">&times;</span>
-        </div>
-      </div>
-
-      <!--Timer-->
-      <div class="text-secondary fixR">
-        <span id="timeLeft">This Quiz has a limited time! </span>
-      </div>
-    </nav>
-  </head>
-
-  <content class="container mt-5 card text-center">
-    <!--Section to display questions during quiz-->
-    <div class="mx-auto mt-5 card-header" id="questionSlot">
-       <h1>Coding Quiz!</h1>
-       <p>Try to answer the following Harry Potter related questions within the time limit. Keep in mind that the incorrect answers will penalize your scoretime by ten seconds!</p>
+  <div class="container">
+    <h1 class="mx-auto mt-5" id="questionSlot">Coding Quiz!</h1>
+    <ul></ul>
+    <div id="starterCont">
+      <button id="startBtn"> ▶ Begin</button>
     </div>
-       
-    <div class="mb-5 text-muted">
-      <!--Section to display options for quiz-->
-      <button id="startButton">Lets Begin!</button>
-      <ul id="optionSlot"></ul>
-
-      <hr>
-
-      <!--section to display if answer is correct or not-->
-      <span id="cpuComment"></span>
-    </div>
-    
-  </content>
-
+    <hr>
+    <p id="cpuComment"></p>
+  </div>
 
     <script src="./script.js"></script>
   </body>
