@@ -38,14 +38,22 @@ var questionsArr = [
     // homepage display objects
     var startBtn = document.getElementById("startBtn");
     var btnContainer = document.getElementById("buttonCont");
+    var viewHsBtn = document.getElementById("viewHighScore");
     
     var scoreWin = 0;
-    var highscoresArr = [];
 
 startBtn.addEventListener("click", function() {
     startBtn.setAttribute("style", "display:none");
     setTime();
 })
+
+viewHsBtn.addEventListener("click", function() {
+    if (localStorage.getItem("allScores") === null){
+        outputSlot.textContent = "There is no highscores!";
+    } else {
+        displayHighscores();
+    }
+});
 
 function setTime() {
     var timerInterval = setInterval(function() {
@@ -60,6 +68,7 @@ function setTime() {
 }
 
 function displayQuiz() {
+    outputSlot.textContent = "";
     if (secondsTimer <= 0) {
         displayHighscores();
     } else {
@@ -97,7 +106,6 @@ function userInput(event){
         } else if (secondsTimer > 5) {
             outputSlot.setAttribute("style", "color:red");
             outputSlot.textContent = "Incorrect! Your available time has been reduced by 5 seconds!";
-            timerSlot.setAttribute("style", "color:red");
             secondsTimer = secondsTimer - 5;
             timerSlot2.textContent = "Ouch! Minus 5 seconds";
             timerSlot2.setAttribute("style", "color: red");
@@ -109,37 +117,11 @@ function userInput(event){
             failure();
         }
     } else {
-        failure();
+        qSlot.innerHTML = "";
+        ulSlot.innerHTML = "";
+        outputSlot.innerHTML = "You failed."
+        restartQuiz();
     }
-}
-
-function failure() {
-    qSlot.innerHTML = "";
-    ulSlot.innerHTML = "";
-    outputSlot.innerHTML = "You failed, <button id=retryBtn>Retry?</button>";
-    secondsTimer = 0;
-    var retryObj = document.getElementById("retryBtn");
-    retryObj.addEventListener("click", (brandNew));
-}
-
-
-function brandNew (event){
-    qSlot.innerHTML = "";
-    ulSlot.innerHTML = "";
-    event.preventDefault();
-    qIndex = 0;
-    secondsTimer = 60;
-    timerSlot.textContent = "This Quiz has a";
-    timerSlot.setAttribute("style", "color:grey");
-    timerSlot2.textContent = "limited time!";
-    timerSlot2.setAttribute("style", "color:grey");
-    outputSlot.innerHTML = "";
-    startBtn.setAttribute("style", "");
-    
-}
-
-function displayHighscores(){
-    console.log("Display Highscores Function here!")
 }
 
 function displayEndInput() {
@@ -166,29 +148,78 @@ function displayEndInput() {
         if (userInitials === "") {
             outputSlot.textContent = "Error: Initials cannot be blank.";
         } else {
-        var userScoreArr = {
-            user: userInitials, 
-            score: scoreWin,
-        };
-        highscoresArr.push(userScoreArr);
-        console.log(userScoreArr);
-        console.log(highscoresArr);
+            var userScoreArr = {
+                initial: userInitials, 
+                score: scoreWin,
+            }
         }
+
+        localStorage.setItem("user", JSON.stringify(userScoreArr));
+
+        var allScores = localStorage.getItem("allScores");
+        if (allScores === null){
+            allScores = [];
+        } else {
+            allScores = JSON.parse(allScores);
+        }
+        allScores.push(userScoreArr);
+        var newScore = JSON.stringify(allScores);
+        localStorage.setItem("allScores", newScore);
+        btnContainer.innerHTML = "";
+        displayHighscores();
     })
 }
 
+function displayHighscores(){
+    qSlot.innerHTML = "";
+    ulSlot.innerHTML = "";
+    btnContainer.innerHTML="";
 
+    var h1El = document.createElement("h1")
+    h1El.textContent=" High Scores";
+    qSlot.appendChild(h1El);
 
+    var allScores = localStorage.getItem("allScores");
 
+    allScores = JSON.parse(allScores);
+    if (allScores !==null){
+        for (var i=0; i < allScores.length; i++){
 
+            var liEl = document.createElement("li");
+            liEl.textContent = allScores[i].initial + " [ " + allScores[i].score + " ] ";
+            ulSlot.append(liEl);
+        } 
+    };
+    restartQuiz();
+}
 
+function restartQuiz() {
+if (scoreWin !== null)
+    // create re-set button to erase local storage memmory
+        var clearBtn = document.createElement("button");
+        clearBtn.setAttribute("id", "clear");
+        clearBtn.textContent = "Clear History";
+        btnContainer.appendChild(clearBtn);
+    
+        clearBtn.addEventListener("click", function () {
+            localStorage.clear();
+            location.reload();
+        })
+    // create button to go back to beginning of the quiz page. 
+        var restartBtn = document.createElement("button");
+        restartBtn.setAttribute("id", "clear");
+        restartBtn.textContent = "ReStart Quiz";
+        btnContainer.appendChild(restartBtn);
+    
+        clearBtn.addEventListener("click", function () {
+            localStorage.clear();
+            location.reload();
+        })
+    
+        restartBtn.addEventListener("click", function(){
+            window.location.replace("./index.html");
+    
+    
+    })
 
-
-
-
-
-
-
-
-
-
+}
