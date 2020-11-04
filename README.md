@@ -12,7 +12,7 @@ The application buttons include the following: begin, restart quiz, highscore an
 
 ## Snapshot
 
-![code quiz] (./demo.gif)
+![code quiz] (./blob/main/demo.gif)
 
 ## Contributors
 
