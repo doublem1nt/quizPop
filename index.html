@@ -17,7 +17,7 @@
 <nav>
   <!--highscores link-->
   <div class="text-secondary fixL">
-    <button id="viewHighScore">View HighScores!</button>
+    <button id="viewHighScore" class="btn btn-info">View HighScores!</button>
   </div>
 
   <!--Timer-->
@@ -28,14 +28,16 @@
 </nav>
 
 <body>
-  <div class="container mx-auto" style="width:50%">
-    <h1 class="mx-auto mt-5 text-center">Coding Quiz!</h1>
-    <h2 id="questionSlot">Try to answer following code-related questions within the time limit. Keep in mind that incorrect answers will penalize your score/time by ten seconds!</h2>
+  <div class="container border mt-5 border-dark mx-auto" style="width:50%">
+    <h1 class="mx-auto mt-5 text-center">Coding Quiz</h1>
+    <h3 id="questionSlot">Try to answer following code-related questions within the time limit. Keep in mind that incorrect answers will penalize your score/time by ten seconds!</h3>
     <ul></ul>
-    <div id="buttonCont">
-      <button id="startBtn"> ▶ Begin</button>
-    </div>
     <hr>
+    <!--Location for all buttons to appear-->
+    <div id="buttonCont">
+      <button id="startBtn" class="btn btn-primary"> ▶ Begin</button>
+    </div>
+    <!--Location for all application responses to appear-->
     <p id="cpuComment"></p>
   </div>
 

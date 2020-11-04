@@ -21,26 +21,28 @@ var questionsArr = [
     answer: "4. all of the above" }];
 
     // timer variable objects
-    var secondsTimer = 60;
+var secondsTimer = 60;
     
     // nav bar w/ Highscores & Timer display objects
-    var highscoresBtn = document.getElementById("highscoresBtn");
-    var timerSlot = document.getElementById("timer1st");
-    var timerSlot2 = document.getElementById("timer2nd");
+var highscoresBtn = document.getElementById("highscoresBtn");
+var timerSlot = document.getElementById("timer1st");
+var timerSlot2 = document.getElementById("timer2nd");
 
     // question objects
-    var qSlot = document.querySelector("#questionSlot");
-    var ulSlot = document.querySelector("ul");
-    var outputSlot = document.querySelector("#cpuComment");
-    var qIndex=0; // remember to reset back to 0 once retake begins
+var qSlot = document.querySelector("#questionSlot");
+var ulSlot = document.querySelector("ul");
+var outputSlot = document.querySelector("#cpuComment");
+var qIndex=0; // remember to reset back to 0 once retake begins
 
 
     // homepage display objects
-    var startBtn = document.getElementById("startBtn");
-    var btnContainer = document.getElementById("buttonCont");
-    var viewHsBtn = document.getElementById("viewHighScore");
+var startBtn = document.getElementById("startBtn");
+var btnContainer = document.getElementById("buttonCont");
+var viewHsBtn = document.getElementById("viewHighScore");
     
-    var scoreWin = 0;
+    // scores related objects
+var scoreWin = 0;
+var allScores = JSON.parse(localStorage.getItem("allScores")) || [];
 
 startBtn.addEventListener("click", function() {
     startBtn.setAttribute("style", "display:none");
@@ -55,6 +57,7 @@ viewHsBtn.addEventListener("click", function() {
     }
 });
 
+// Function to begin time countdown from 60 seconds
 function setTime() {
     var timerInterval = setInterval(function() {
         secondsTimer--;
@@ -67,27 +70,33 @@ function setTime() {
     displayQuiz();
 }
 
+
+// Function to build quiz questions & options 
 function displayQuiz() {
-    outputSlot.textContent = "";
+    // outputSlot.textContent = "";
     if (secondsTimer <= 0) {
         displayHighscores();
     } else {
+        // clears elements for question / options to render
         qSlot.innerHtml = "";
         ulSlot.innerHTML = "";
         qSlot.textContent = questionsArr[qIndex].question;
+        // loops through Questions Arry to build out all avialble option properties
         for (var i =0; i< questionsArr[i].options.length; i++){
             var liNewEl = document.createElement("li");
             liNewEl.setAttribute("style", "list-style-type:none");
-            liNewEl.innerHTML = "<button>" + questionsArr[qIndex].options[i]+ "</buton>";
+            liNewEl.innerHTML = "<button class=btn-secondary btn-sm btn-block>" + questionsArr[qIndex].options[i]+ "</buton>";
             ulSlot.append(liNewEl);
             liNewEl.addEventListener("click", (userInput));
         }
     }
 }
 
+// Function to respond to user clicking on options, in response to Quiz Question
 function userInput(event){
     var userClick = event.target.textContent;
     if(secondsTimer > 0) {
+        // response if user clicks on the CORRECT ANSWER & it is not the last question
         if (userClick === questionsArr[qIndex].answer && qIndex !== 4) {
             outputSlot.setAttribute("style", "color:green");
             outputSlot.textContent = "Correct!";
@@ -95,6 +104,7 @@ function userInput(event){
             timerSlot2.textContent = "";
             qIndex++;
             displayQuiz();
+            // response if user clicks on the CORRECT ANSWER & finishes all Questions
         } else if (userClick === questionsArr[qIndex].answer && qIndex === 4){
             scoreWin = secondsTimer;
             timerSlot = "";
@@ -102,29 +112,35 @@ function userInput(event){
             ulSlot.textContent = "";
             outputSlot.innerHTML = "CONGRATS, You've finished the Quiz successfully! <p> Your time will be registered as your score: " + scoreWin + ".";
             outputSlot.setAttribute("style", "color:green");
+            // renders input form for user to save their score (& initial)
             displayEndInput();
+            // response if user clicks on the INCORRECT ANSWER
         } else if (secondsTimer > 5) {
             outputSlot.setAttribute("style", "color:red");
             outputSlot.textContent = "Incorrect! Your available time has been reduced by 5 seconds!";
+            
+            // Penalizes time by subtracting 5 seconds
             secondsTimer = secondsTimer - 5;
             timerSlot2.textContent = "Ouch! Minus 5 seconds";
             timerSlot2.setAttribute("style", "color: red");
         } else {
+            // response if user clicks on the INCORRECT ANSWER & there is no more time remaining. Ends game. 
             outputSlot.setAttribute("style", "color:red");
-            outputSlot.textContent = "Incorrect! Ran out of time!";
+            outputSlot.textContent = "Incorrect! You failed due to penalty! You must end with time remaining!";
             timerSlot.setAttribute("style", "color:red");
             secondsTimer = 1;
-            failure();
         }
+        // response if you simply run out of available time and do not answer all questions successfully.
     } else {
         qSlot.innerHTML = "";
         ulSlot.innerHTML = "";
-        outputSlot.innerHTML = "You failed."
+        outputSlot.innerHTML = "You ran out of time."
         restartQuiz();
     }
 }
-
+// function to display input form for user to save their highscore & provide initials
 function displayEndInput() {
+    // builds input form
     var buildInput = document.createElement("input");
     buildInput.setAttribute("type", "text");
     buildInput.setAttribute("id", "initials");
@@ -132,44 +148,39 @@ function displayEndInput() {
     buildInput.textContent = "";
 
     btnContainer.append(buildInput);
-
+// builds submit button
     var buildSubmit = document.createElement("button");
-    buildSubmit.setAttribute("type", "submit");
+    buildSubmit.setAttribute("class", "btn btn-success");
     buildSubmit.setAttribute("id", "Submit");
     buildSubmit.textContent = "Submit";
 
     btnContainer.append(buildSubmit);
 
     var initialsUser = document.querySelector("#initials");
-
+// waits for user initials & submit click
     buildSubmit.addEventListener("click", function() {
         var userInitials = initialsUser.value;
-
-        if (userInitials === "") {
-            outputSlot.textContent = "Error: Initials cannot be blank.";
-        } else {
+// stores user information & score into local storage
+        if (userInitials !== "") {
             var userScoreArr = {
                 initial: userInitials, 
                 score: scoreWin,
             }
-        }
+            localStorage.setItem("user", JSON.stringify(userScoreArr));
+            allScores.push(userScoreArr);
 
-        localStorage.setItem("user", JSON.stringify(userScoreArr));
-
-        var allScores = localStorage.getItem("allScores");
-        if (allScores === null){
-            allScores = [];
+            var newHighscores = JSON.stringify(allScores);
+            localStorage.setItem("allScores", newHighscores);
+            outputSlot.innerHTML = "";
+            displayHighscores();
         } else {
-            allScores = JSON.parse(allScores);
+            alert("Error: Initials cannot be blank.");
         }
-        allScores.push(userScoreArr);
-        var newScore = JSON.stringify(allScores);
-        localStorage.setItem("allScores", newScore);
-        btnContainer.innerHTML = "";
-        displayHighscores();
-    })
-}
 
+        
+    });
+}
+// function to display render all current highscores
 function displayHighscores(){
     qSlot.innerHTML = "";
     ulSlot.innerHTML = "";
@@ -179,9 +190,8 @@ function displayHighscores(){
     h1El.textContent=" High Scores";
     qSlot.appendChild(h1El);
 
-    var allScores = localStorage.getItem("allScores");
-
-    allScores = JSON.parse(allScores);
+    // var allScores = localStorage.getItem("allScores");
+    // allScores = JSON.parse(allScores);
     if (allScores !==null){
         for (var i=0; i < allScores.length; i++){
 
@@ -192,14 +202,14 @@ function displayHighscores(){
     };
     restartQuiz();
 }
-
+// function to display Clear History & Restart Quiz Buttons
 function restartQuiz() {
-if (scoreWin !== null)
     // create re-set button to erase local storage memmory
         var clearBtn = document.createElement("button");
         clearBtn.setAttribute("id", "clear");
+        clearBtn.setAttribute("class", "btn btn-dark")
         clearBtn.textContent = "Clear History";
-        btnContainer.appendChild(clearBtn);
+        btnContainer.append(clearBtn);
     
         clearBtn.addEventListener("click", function () {
             localStorage.clear();
@@ -208,8 +218,9 @@ if (scoreWin !== null)
     // create button to go back to beginning of the quiz page. 
         var restartBtn = document.createElement("button");
         restartBtn.setAttribute("id", "clear");
+        restartBtn.setAttribute("class", "btn btn-light")
         restartBtn.textContent = "ReStart Quiz";
-        btnContainer.appendChild(restartBtn);
+        btnContainer.append(restartBtn);
     
         clearBtn.addEventListener("click", function () {
             localStorage.clear();
