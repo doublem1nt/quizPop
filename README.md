@@ -16,7 +16,7 @@ The application buttons include the following: begin, restart quiz, highscore an
 
 ## GIF / Snapshot
 
-![code quiz] (./images/demo.gif)
+![code quiz](./images/demo.gif)
 
 ## Deployed Website
 https://doublem1nt.github.io/quizPop/
